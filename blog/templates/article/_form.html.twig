@@ -1,0 +1,21 @@
+<form action="{{ path }}" method="post">
+    <div class="col-6 offset-3">
+        <div class="mb-3">
+            <label for="title" class="form-label">Titre</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ article.title|default(null)  }}" placeholder="ex. Comment créer une appli...">
+        </div>
+        <div class="mb-3">
+            <label for="author" class="form-label">Auteur</label>
+            <input type="text" class="form-control" id="author" name="author" value="{{ article.author|default(null)  }}" placeholder="ex. Duval">
+        </div>        
+        <div class="mb-3">
+            <label for="content" class="form-label">Contenu</label>
+            <textarea class="form-control" id="content" name="content" rows="3" placeholder="ex. blabla...">{{ article.content|default(null) }}</textarea>
+        </div>         
+        <div class="mb-3">
+            <label for="thumbnail" class="form-label">URL de l'image</label>
+            <input type="url" class="form-control" id="thumbnail" name="thumbnail" value="{{ article.thumbnail|default(null)  }}" placeholder="ex. http://exemple.com/image.jpg">
+        </div>   
+        <button class="btn btn-primary" type="submit">{{ btn_label }}</button>                 
+    </div>        
+</form>

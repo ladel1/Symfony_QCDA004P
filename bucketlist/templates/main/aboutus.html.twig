@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+{{ parent() }} - About Us
+{% endblock %}
+
+{% block body %}
+    <div class="row text-center mt-3">
+        <h1>About Us</h1>
+    </div>
+    
+    {% for item in team %}
+        <div class="card" style="width: 18rem;">
+            <img src="{{ item.picture }}" class="card-img-top" alt="{{ item.lastname }}">
+            <div class="card-body">
+            <h4>{{ item.creatorOf}}</h4>            
+            <h5 class="card-title">{{ (item.firstname == "Fabien")? (item.firstname~" "~item.lastname~" ❤"):item.firstname~" "~item.lastname }}</h5>
+            <h6 class="card-title">{{ item.dateOfBirth|date("d-m-Y") }}</h6>
+            <p class="card-text">{{ item.description }}</p>
+            </div>
+        </div>        
+    {% endfor %}
+    
+{% endblock %}

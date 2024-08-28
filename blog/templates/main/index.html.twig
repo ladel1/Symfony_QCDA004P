@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{{ asset('style-home.css') }}">
+{% endblock %}
+
+{% block body %}
+<h1>Ma page Home</h1>
+
+{% include "form.html.twig" with {action:'/modifier',button:'Modifier'} %}
+
+{% endblock %}
+
+
+{% block title %}
+Home - Blog
+{% endblock %}
+
+
+
