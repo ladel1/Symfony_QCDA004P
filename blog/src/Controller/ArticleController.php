@@ -119,5 +119,11 @@ class ArticleController extends AbstractController
         return $this->redirectToRoute("app_articles_list");
     }
 
+    #[Route("/rechercher",name:"search")]
+    public function search(Request $request,ArticleRepository $repo):Response{
+        $articles = $repo->searchWithQueryBuilder($request->get("q"));
+        return $this->render("article/index.html.twig",["articles"=>$articles]);
+    }
+
 
 }

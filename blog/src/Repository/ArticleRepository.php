@@ -16,6 +16,30 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+
+    public function search(string $keyword):array{
+
+        $em = $this->getEntityManager();
+        $dql = "
+                SELECT a 
+                FROM App\Entity\Article a
+                WHERE a.title LIKE :keyword
+                OR a.content LIKE :keyword
+        ";
+        $query = $em->createQuery($dql);
+        $query->setParameter("keyword","%".$keyword."%");
+        return $query->getResult();
+    }
+
+    public function searchWithQueryBuilder(string $keyword):array{
+
+        $qb = $this->createQueryBuilder("a");
+        $qb->where("a.title LIKE :keyword")
+            ->orWhere("a.content LIKE :keyword");
+        $query = $qb->getQuery();
+        $query->setParameter("keyword","%".$keyword."%");
+        return $query->getResult();
+    }
     
 
     //    /**
