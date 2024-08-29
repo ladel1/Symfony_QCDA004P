@@ -37,6 +37,9 @@
                                 <a class="nav-link active" aria-current="page" href="{{ path("app_wish_list") }}">Wishes</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="{{ path("app_wish_add") }}">Add wish</a>
+                            </li>                            
+                            <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="{{ path("app_main_about_us") }}">About Us</a>
                             </li>                                                        
                         </ul>
@@ -44,7 +47,24 @@
                     </div>
                 </nav>            
             </header>
-            <main class="row">{% block body %}{% endblock %}</main>
+            <main class="row">
+                <div class="col-6 offset-3">
+                    {% for type,messages in app.flashes %}
+                    <div class="toast"  style="display: block;" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                          <strong class="me-auto">{{ type }}</strong>                          
+                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        {% for message in messages %}
+                            <div class="toast-body">
+                                {{ message }}
+                            </div> 
+                        {% endfor %}
+                    </div>                    
+                    {% endfor %}
+                </div>
+                {% block body %}{% endblock %}
+            </main>
             <footer class="row bg-dark text-white text-center">
                 <p class="py-5" >
                     BucketList &copy; {{ 'now'|date('Y') }}

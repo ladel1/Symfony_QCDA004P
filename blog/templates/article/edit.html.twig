@@ -6,7 +6,6 @@
 <div class="row text-center mt-3">
     <h1>Modifier un article</h1>
 </div>
-<div class="row">
-    {% include "article/_form.html.twig" with { path:path("app_articles_edit",{id:article.id}),btn_label:'Modifier',article:article } %}
-</div>
+{% include "article/_form.html.twig" with { btn_label:'Modifier' } %}
+
 {% endblock %}

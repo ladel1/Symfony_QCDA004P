@@ -4,5 +4,9 @@
 
 {% block body %}
 <h1>Liste</h1>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et repudiandae autem commodi exercitationem voluptatibus illo, quasi expedita officia architecto quas magnam dicta itaque voluptate est libero, nostrum ut magni quo.</p>
+<ul>
+    {% for item in wishes %}
+        <li><a href="{{ path("app_wish_detail",{id:item.id}) }}">{{ item.title }} - {{ item.dateCreated|date("d-m-Y") }}</a></li>
+    {% endfor %}
+</ul>
 {% endblock %}

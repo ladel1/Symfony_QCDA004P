@@ -3,10 +3,9 @@
 {% block title %}Ajouter un article{% endblock %}
 
 {% block body %}
-<div class="row text-center mt-3">
+<div class="row text-center my-4">
     <h1>Ajouter un article</h1>
 </div>
-<div class="row">
-    {% include "article/_form.html.twig" with { path:path('app_articles_add'),btn_label:'Ajouter' } %}
-</div>
+{% include "article/_form.html.twig" with { btn_label:'Ajouter' } %}
+
 {% endblock %}

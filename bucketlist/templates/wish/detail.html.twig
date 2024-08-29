@@ -3,6 +3,9 @@
 {% block title %}Détail{% endblock %}
 
 {% block body %}
-<h1>Détail</h1>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Et repudiandae autem commodi exercitationem voluptatibus illo, quasi expedita officia architecto quas magnam dicta itaque voluptate est libero, nostrum ut magni quo.</p>
+<h1>Détail Wish</h1>
+<h3>Titre: {{ wish.title }}</h3>
+<h3>Auteur: {{ wish.author }}</h3>
+<h3>Description: {{ wish.description }}</h3>
+<h3>Date: {{ wish.dateCreated|date("d-m-Y") }}</h3>
 {% endblock %}

@@ -23,6 +23,39 @@
         </form>
     </div>
 </div>
+<hr>
+<div class="row my-5">
+    <div class="col-6">
+        <div class="row text-center my-5">
+            <h4>Ajouter un commentaire</h4>
+        </div>        
+        <div class="row p-5">
+            {{ form_start(commentForm,{'action':path('app_comment_add',{'article':article.id})})}}
+                {{ form_widget(commentForm)}}
+                <button class="btn btn-primary" type="submit">Ajouter</button>
+            {{ form_end(commentForm)}}
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="row text-center my-5">
+            <h4>Les commentaires</h4>
+        </div> 
+        <div class="row p-5">
+            <div class="list-group">
+                {% for comment in comments %}            
+                <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ comment.username }}</h5>
+                    {# <small> {{ "now"|date_diff(comment.createdAt) }} </small> #}
+                    <small> {{ comment.createdAt|date("d-m-Y H:i:s") }} </small>
+                  </div>
+                  <p class="mb-1">{{ comment.comment }}</p>              
+                </a>
+                {% endfor %}            
+            </div>
+        </div>
 
+    </div>
+</div>
 
 {% endblock %}

@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Entity\OldArticle;
+use App\Form\ArticleType;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
+use App\Repository\CommentRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,16 +22,6 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 #[Route("/articles",name:"app_articles_")]
 class ArticleController extends AbstractController
 {
-    private $articles;
-
-    public function __construct()
-    {
-        $this->articles=[
-            new OldArticle("Formation Rust","balablablalab","Dupont",new \DateTime(),true,"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Rust_programming_language_black_logo.svg/1200px-Rust_programming_language_black_logo.svg.png"),
-            new OldArticle("Comment créer son propre systeme d'exploitation avec c/c++","lblabalbalb" ,"Adel",new \DateTime(),true,"https://terminalroot.com/assets/img/cppdaily/check-os-cpp.jpg")
-        ];
-    } 
-    // CRUD
 
     #[Route('/', name: 'list')]
     public function list(ArticleRepository $repo): Response
@@ -51,56 +45,51 @@ class ArticleController extends AbstractController
     // }
 
     #[Route("/{id}",name:"details",requirements:["id"=>"\d+"])]
-    public function details(Article $article):Response{// méthode 2
+    public function details(Article $article,CommentRepository $commentRepo):Response{// méthode 2
+        $comment = new Comment();
+        $commentForm = $this->createForm(CommentType::class,$comment);
+
         return $this->render("article/detail.html.twig",[
-            "article"=>$article
+            "article"=>$article,
+            "commentForm"=>$commentForm->createView(),
+            "comments"=>$commentRepo->findBy(["article"=>$article])
         ]);
     }
 
     #[Route("/ajouter",name:"add")]
     public function ajouter(Request $request,EntityManagerInterface $em):Response{     
-        
-        if($request->isMethod("POST")){ // l'étape de validation est obligatoire!!!!!!!!!!!!!!!!!!!
-
-            $article = new Article();
-            // pour récupérer les données d'un formulaire POST faut utiliser $request->request->get() ou $request->get()
-            // pour récupérer les données d'un formulaire GET faut utiliser $request->query->get()
-            $article->setTitle($request->get("title"))
-                    ->setContent($request->get("content"))
-                    ->setAuthor($request->get("author"))
-                    ->setThumbnail($request->get("thumbnail"));
-            
+        // etape 1: création de l'objet
+        $article = new Article();
+        // étape 2: creation formulaire
+        $form = $this->createForm(ArticleType::class,$article);
+        // étape 3: handle request => gestion de la requete http
+        $form->handleRequest($request);
+        // étape 4: validation
+        if($form->isSubmitted() && $form->isValid()){
             $em->persist($article);
             $em->flush();
-            
-            return $this->redirectToRoute("app_articles_list");
+            $this->addFlash("success","L'article a bien été ajouté");
+            return  $this->redirectToRoute("app_articles_list");
         }
 
-        return $this->render("article/add.html.twig");
+        return $this->render("article/add.html.twig",["formArticle"=>$form->createView()]);
     }
 
     #[Route("/modifier/{id}",name:"edit")]
     public function edit(Article $article,Request $request,EntityManagerInterface $em):Response{     
-        
-        if($request->isMethod("POST")){ // l'étape de validation est obligatoire!!!!!!!!!!!!!!!!!!!
-
-            
-            // pour récupérer les données d'un formulaire POST faut utiliser $request->request->get() ou $request->get()
-            // pour récupérer les données d'un formulaire GET faut utiliser $request->query->get()
-            $article->setTitle($request->get("title"))
-                    ->setContent($request->get("content"))
-                    ->setAuthor($request->get("author"))
-                    ->setThumbnail($request->get("thumbnail"));
-            
-
+        // etape 1: création de l'objet ----> l'objet dans les params
+        // étape 2: creation formulaire
+        $form = $this->createForm(ArticleType::class,$article);
+        // étape 3: handle request => gestion de la requete http
+        $form->handleRequest($request);
+        // étape 4: validation
+        if($form->isSubmitted() && $form->isValid()){
+            // mettre a jour les données
             $em->flush();
-
             $this->addFlash("success","L'article a bien été modifié");
-
-            return $this->redirectToRoute("app_articles_list");
+            return  $this->redirectToRoute("app_articles_list");
         }
-
-        return $this->render("article/edit.html.twig",["article"=>$article]);
+        return $this->render("article/edit.html.twig",["formArticle"=>$form]);
     }
 
 

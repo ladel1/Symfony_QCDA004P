@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -15,12 +18,27 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message:"Veuillez renseigner le titre de l'article")]
+    #[Assert\Length(
+        min:3,
+        max:255,
+        minMessage:"Trop court ! au moins {{ limit }} caractères",
+        maxMessage:"Trop long ! Maximum {{ limit }} caractères"
+    )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message:"Veuillez renseigner le contenu de l'article")]
     private ?string $content = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank(message:"Veuillez renseigner l'auteur de l'article")]
+    #[Assert\Length(
+        min:2,
+        max:30,
+        minMessage:"Trop court ! au moins {{ limit }} caractères",
+        maxMessage:"Trop long ! Maximum {{ limit }} caractères"
+    )]    
     private ?string $author = null;
 
     #[ORM\Column]
@@ -32,11 +50,18 @@ class Article
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $thumbnail = null;
 
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article', orphanRemoval: true)]
+    private Collection $comments;
+
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->isPublished = true;
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,6 +137,36 @@ class Article
     public function setThumbnail(?string $thumbnail): static
     {
         $this->thumbnail = $thumbnail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getArticle() === $this) {
+                $comment->setArticle(null);
+            }
+        }
 
         return $this;
     }

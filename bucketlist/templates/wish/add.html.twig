@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add your wishes!{% endblock %}
+
+{% block body %}
+<div class="row text-center my-4">
+    <h1>Add your wishes!</h1>
+</div>
+<div class="row">
+    <div class="col-6 offset-3">
+        {{ form_start(wishForm) }}
+            {{ form_widget(wishForm) }}
+            <button class="btn btn-primary" type="submit">Let's go!</button>
+        {{ form_end(wishForm) }}
+    </div>
+</div>
+{% endblock %}
