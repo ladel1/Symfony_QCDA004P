@@ -18,7 +18,7 @@ class ArticleType extends AbstractType
         $builder
             ->add('title',TextType::class,["label"=>"Titre"])
             ->add('content',TextareaType::class,["label"=>"Contenu"])
-            ->add('author',TextType::class,["label"=>"Auteur"])
+            //->add('author',TextType::class,["label"=>"Auteur"])
             // ->add('createdAt', null, [
             //     'widget' => 'single_text',
             // ])

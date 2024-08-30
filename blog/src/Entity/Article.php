@@ -31,15 +31,7 @@ class Article
     #[Assert\NotBlank(message:"Veuillez renseigner le contenu de l'article")]
     private ?string $content = null;
 
-    #[ORM\Column(length: 30)]
-    #[Assert\NotBlank(message:"Veuillez renseigner l'auteur de l'article")]
-    #[Assert\Length(
-        min:2,
-        max:30,
-        minMessage:"Trop court ! au moins {{ limit }} caractères",
-        maxMessage:"Trop long ! Maximum {{ limit }} caractères"
-    )]    
-    private ?string $author = null;
+
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -55,6 +47,10 @@ class Article
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article', orphanRemoval: true)]
     private Collection $comments;
+
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
 
 
     public function __construct()
@@ -93,17 +89,6 @@ class Article
         return $this;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): static
-    {
-        $this->author = $author;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -167,6 +152,18 @@ class Article
                 $comment->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\WishRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -43,6 +44,16 @@ class Wish
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateCreated = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
+    public function __construct()
+    {
+        $this->isPublished=true;
+        $this->dateCreated = new DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +116,18 @@ class Wish
     public function setDateCreated(?\DateTimeInterface $dateCreated): static
     {
         $this->dateCreated = $dateCreated;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

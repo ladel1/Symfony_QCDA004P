@@ -6,7 +6,7 @@
 <h1>Liste</h1>
 <ul>
     {% for item in wishes %}
-        <li><a href="{{ path("app_wish_detail",{id:item.id}) }}">{{ item.title }} - {{ item.dateCreated|date("d-m-Y") }}</a></li>
+        <li><a href="{{ path("app_wish_detail",{id:item.id}) }}">{{ item.title }} - {{ item.dateCreated|date("d-m-Y") }} [{{ item.category.name }}]</a></li>
     {% endfor %}
 </ul>
 {% endblock %}

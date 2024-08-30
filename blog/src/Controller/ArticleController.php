@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\OldArticle;
+use App\Entity\User;
 use App\Form\ArticleType;
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
@@ -17,9 +18,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 // prefix
 #[Route("/articles",name:"app_articles_")]
+//#[IsGranted("ROLE_USER")]
 class ArticleController extends AbstractController
 {
 
@@ -45,19 +48,31 @@ class ArticleController extends AbstractController
     // }
 
     #[Route("/{id}",name:"details",requirements:["id"=>"\d+"])]
-    public function details(Article $article,CommentRepository $commentRepo):Response{// méthode 2
+    public function details(Article $article):Response{// méthode 2
         $comment = new Comment();
         $commentForm = $this->createForm(CommentType::class,$comment);
 
         return $this->render("article/detail.html.twig",[
             "article"=>$article,
-            "commentForm"=>$commentForm->createView(),
-            "comments"=>$commentRepo->findBy(["article"=>$article])
+            "commentForm"=>$commentForm->createView()
         ]);
     }
 
+    //#[IsGranted("ROLE_USER")]
     #[Route("/ajouter",name:"add")]
     public function ajouter(Request $request,EntityManagerInterface $em):Response{     
+
+        // if(!$this->isGranted("ROLE_ADMIN")){
+        //     return $this->redirectToRoute("app_login");
+        // }
+
+        // if(!$this->getUser()){
+        //     return $this->redirectToRoute("app_login");
+        // }
+        // if(!$this->isGranted("ROLE_ADMIN")){
+        //     // une fonctionalité en plus .....
+        // }
+
         // etape 1: création de l'objet
         $article = new Article();
         // étape 2: creation formulaire
@@ -66,6 +81,7 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
         // étape 4: validation
         if($form->isSubmitted() && $form->isValid()){
+            $article->setAuthor($this->getUser());// connected user
             $em->persist($article);
             $em->flush();
             $this->addFlash("success","L'article a bien été ajouté");
@@ -76,7 +92,15 @@ class ArticleController extends AbstractController
     }
 
     #[Route("/modifier/{id}",name:"edit")]
-    public function edit(Article $article,Request $request,EntityManagerInterface $em):Response{     
+    public function edit(Article $article,Request $request,EntityManagerInterface $em):Response{    
+        /**
+         * @var User
+         */
+        $user = $this->getUser();
+        if( $user->getId()!==$article->getAuthor()->getId()){
+            return $this->redirectToRoute("app_articles_list");
+        }
+        
         // etape 1: création de l'objet ----> l'objet dans les params
         // étape 2: creation formulaire
         $form = $this->createForm(ArticleType::class,$article);
@@ -95,6 +119,14 @@ class ArticleController extends AbstractController
 
     #[Route("/supprimer/{id}",name:"delete",requirements:["id"=>"\d+"],methods:["POST"])]
     public function delete(Article $article,EntityManagerInterface $em,Request $request):Response{
+
+        /**
+         * @var User
+         */
+        $user = $this->getUser();
+        if( $user->getId()!==$article->getAuthor()->getId()){
+            return $this->redirectToRoute("app_articles_list");
+        }
 
         $csrf_token = $request->getPayload()->get("token");
 

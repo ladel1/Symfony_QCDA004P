@@ -44,6 +44,25 @@
             </header>
             <main class="row">
                 <div class="container">
+                    {% if app.user %}
+                        <div class="row">                        
+                            <h1>Vous êtes connecté 😊</h1>
+                        </div>
+                    {% else %}
+                    <div class="row">                        
+                        <h1>Vous n'êtes pas connecté 😢🤦‍♂️🤦‍♀️🤷‍♀️</h1>
+                    </div>                    
+                    {% endif %}
+                    {% if is_granted('ROLE_USER') %}
+                    <div class="row">                        
+                        <h1>Vous avez le role USER 👏</h1>
+                    </div> 
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <div class="row">                        
+                        <h1>Vous avez le role ADMIN 👏👀✔</h1>
+                    </div> 
+                    {% endif %}                    
                     {% block body %}{% endblock %}
                 </div>
             </main>

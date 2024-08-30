@@ -4,7 +4,7 @@
 
 {% block body %}
 <h1>Détail Wish</h1>
-<h3>Titre: {{ wish.title }}</h3>
+<h3>Titre: {{ wish.title  }} [{{ wish.category.name }}]</h3>
 <h3>Auteur: {{ wish.author }}</h3>
 <h3>Description: {{ wish.description }}</h3>
 <h3>Date: {{ wish.dateCreated|date("d-m-Y") }}</h3>

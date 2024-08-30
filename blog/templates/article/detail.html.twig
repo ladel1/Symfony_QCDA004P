@@ -6,7 +6,7 @@
 
 <div class="row text-center mt-3">
     <h1>{{ article.title }}</h1>
-    <p> {{ article.author }} - ({{ article.createdAt|date("d/m/Y") }}) </p>
+    <p> {{ article.author.email }} - ({{ article.createdAt|date("d/m/Y") }}) </p>
 </div>
 <div class="row text-center">
     <img class="thumbnail" src="{{ article.thumbnail }}" alt="{{ article.title }}">
@@ -14,6 +14,7 @@
         {{ article.content }}
     </p>
 </div>
+{% if app.user and app.user.id == article.author.id %}
 <div class="row text-center">
     <div class="col">
         <a class="btn btn-success" role="button" href="{{ path('app_articles_edit',{id:article.id}) }}" >Modifier</a>
@@ -23,6 +24,7 @@
         </form>
     </div>
 </div>
+{% endif %}
 <hr>
 <div class="row my-5">
     <div class="col-6">
@@ -42,12 +44,12 @@
         </div> 
         <div class="row p-5">
             <div class="list-group">
-                {% for comment in comments %}            
+                {% for comment in article.comments %}            
                 <a href="#" class="list-group-item list-group-item-action" aria-current="true">
                   <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">{{ comment.username }}</h5>
-                    {# <small> {{ "now"|date_diff(comment.createdAt) }} </small> #}
-                    <small> {{ comment.createdAt|date("d-m-Y H:i:s") }} </small>
+                    <small> {{ comment.createdAt|time_diff }} </small>
+                    {# <small> {{ comment.createdAt|date("d-m-Y H:i:s") }} </small> #}
                   </div>
                   <p class="mb-1">{{ comment.comment }}</p>              
                 </a>
