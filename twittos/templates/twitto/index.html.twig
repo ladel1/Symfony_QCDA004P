@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twitto index{% endblock %}
+
+{% block body %}
+    <h1>Twitto index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Content</th>
+                <th>Image</th>
+                <th>CreatedAt</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for twitto in twittos %}
+            <tr>
+                <td>{{ twitto.id }}</td>
+                <td>{{ twitto.content }}</td>
+                <td>{{ twitto.image }}</td>
+                <td>{{ twitto.createdAt ? twitto.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_twitto_show', {'id': twitto.id}) }}">show</a>
+                    <a href="{{ path('app_twitto_edit', {'id': twitto.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_twitto_new') }}">Create new</a>
+{% endblock %}

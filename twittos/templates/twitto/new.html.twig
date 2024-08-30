@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Twitto{% endblock %}
+
+{% block body %}
+    <h1>Create new Twitto</h1>
+
+    {{ include('twitto/_form.html.twig') }}
+
+    <a href="{{ path('app_twitto_index') }}">back to list</a>
+{% endblock %}

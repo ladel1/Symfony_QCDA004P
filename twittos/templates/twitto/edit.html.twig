@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Twitto{% endblock %}
+
+{% block body %}
+    <h1>Edit Twitto</h1>
+
+    {{ include('twitto/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_twitto_index') }}">back to list</a>
+
+    {{ include('twitto/_delete_form.html.twig') }}
+{% endblock %}
