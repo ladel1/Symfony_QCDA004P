@@ -35,15 +35,17 @@
                  .then((reponse)=> reponse.json())
                  .then((data)=>{
                     let like = JSON.parse(data);
-                    let likeButton = this.querySelector(".fa-heart");                   
+                    let likeButton = this.querySelector(".fa-heart");   
+     
                     if(like.status == 1){
-                        console.log("Like");
+                        this.nextElementSibling.innerHTML++;
                         likeButton.classList.add("fa-solid");
                         likeButton.classList.remove("fa-regular");
                     }else{
-                        console.log("UnLike");
+                        this.nextElementSibling.innerHTML--;
                         likeButton.classList.add("fa-regular");
                         likeButton.classList.remove("fa-solid");
+                        
                     }
                     
                  })

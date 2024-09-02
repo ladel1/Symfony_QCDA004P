@@ -4,3 +4,6 @@
     filter: brightness(0) invert(1);
     margin-right: 5px;
 }
+.like{
+    cursor: pointer;
+}

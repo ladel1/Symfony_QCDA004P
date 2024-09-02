@@ -13,13 +13,9 @@
     {% if app.user%}
       <div class="card-body">
 
-        {% if  twitto.likes|filter(like => like.user == app.user)|length>0 %}
-          <a  class="card-link text-primary like" data-id="{{ twitto.id }}" ><i class="fa-solid fa-heart"></i></a>
-        {% else %}
-          <a  class="card-link text-primary like" data-id="{{ twitto.id }}" ><i class="fa-regular fa-heart"></i></a>
-        {% endif %}
 
-        <a data-bs-target="#collapse{{ twitto.id }}"  type="button" data-bs-toggle="collapse" class="card-link text-primary"><i class="fa-regular fa-comment-dots"></i></a>
+        <a  class="card-link text-primary like" data-id="{{ twitto.id }}" ><i class="{{ (twitto.likes|filter(like => like.user == app.user)|length>0)?'fa-solid':'fa-regular' }} fa-heart"></i></a> <span class="text-primary nbr-likes"> {{ twitto.likes|length }} </span>
+        <a data-bs-target="#collapse{{ twitto.id }}"  type="button" data-bs-toggle="collapse" class="card-link text-primary"><i class="fa-regular fa-comment-dots"></i></a> <span class="text-primary nbr-replies"> {{ twitto.replies|length }} </span>
         <a  class="card-link text-primary"><i class="fa-solid fa-share"></i></a>
       </div>
     {% endif %}
