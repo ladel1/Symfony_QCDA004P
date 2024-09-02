@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ parent() }} - Accueil {% endblock %}
+
+{% block body %}
+
+{% if app.user %}
+    <div class="row mt-4">
+        <div class="col-4 offset-4">
+            {{ form_start(twittoForm,{'action':path('app_twitto_new')}) }}
+                {{ form_widget(twittoForm) }}
+                <button class="btn btn-primary" type="submit" >Créer un Twitto</button>
+            {{ form_end(twittoForm) }}
+        </div>
+    </div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-4 offset-4">
+        {% for twitto in twittos %}
+            {% include "home/_twitto.html.twig" %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.querySelectorAll(".like").forEach((element,numer,array)=>{
+            element.addEventListener("click",function(event){                
+                let twittoId = event.currentTarget.getAttribute("data-id");
+                fetch('/like/'+twittoId,{ 
+                    method: "post"
+                 })
+                 .then((reponse)=> reponse.json())
+                 .then((data)=>{
+                    let like = JSON.parse(data);
+                    let likeButton = this.querySelector(".fa-heart");                   
+                    if(like.status == 1){
+                        console.log("Like");
+                        likeButton.classList.add("fa-solid");
+                        likeButton.classList.remove("fa-regular");
+                    }else{
+                        console.log("UnLike");
+                        likeButton.classList.add("fa-regular");
+                        likeButton.classList.remove("fa-solid");
+                    }
+                    
+                 })
+                 .catch((error)=>{
+                    console.error(error);
+                 })
+                 ;
+            })
+        });
+    </script>
+{% endblock %}

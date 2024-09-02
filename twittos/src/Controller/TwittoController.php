@@ -22,7 +22,7 @@ final class TwittoController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_twitto_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_twitto_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $twitto = new Twitto();
@@ -30,17 +30,55 @@ final class TwittoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $twitto->setAuthor($this->getUser());
             $entityManager->persist($twitto);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_twitto_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('twitto/new.html.twig', [
-            'twitto' => $twitto,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+
+
+
+
+
+
+    #[Route('/replay/{id}', name: 'app_twitto_reply', methods: ['POST'])]
+    public function reply(Twitto $twitto,Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $twittoReplay = new Twitto();
+        $form = $this->createForm(TwittoType::class, $twittoReplay);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $this->isCsrfTokenValid('reply-item', $request->getPayload()->getString('twitto__token'))) {
+            $twittoReplay->setParentTwitto($twitto);
+            $twittoReplay->setAuthor($this->getUser());
+            $entityManager->persist($twittoReplay);
+            $entityManager->flush();
+        }
+
+        
+        return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #[Route('/{id}', name: 'app_twitto_show', methods: ['GET'])]
     public function show(Twitto $twitto): Response
@@ -50,7 +88,7 @@ final class TwittoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_twitto_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'app_twitto_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Twitto $twitto, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(TwittoType::class, $twitto);
@@ -68,7 +106,7 @@ final class TwittoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_twitto_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'app_twitto_delete', methods: ['POST'])]
     public function delete(Request $request, Twitto $twitto, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$twitto->getId(), $request->getPayload()->getString('_token'))) {

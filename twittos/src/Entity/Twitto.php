@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TwittoRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -47,6 +48,7 @@ class Twitto
     {
         $this->replies = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int

@@ -1,0 +1,41 @@
+<div class="card mb-3">
+    <h3 class="card-header">
+        {# <img alt="profile picture" > --- #} 
+        @{{ twitto.author.username }}
+    </h3>
+    <div class="card-body">
+        <p class="card-text">{{ twitto.content }}</p>
+      </div>
+    {% if twitto.image  %} 
+        <img src="{{ twitto.image }}" alt="image" class="d-block user-select-none" width="100%" height="100%" role="img">
+    {% endif %}
+    {# Section buttons like,comment,share #}
+    {% if app.user%}
+      <div class="card-body">
+
+        {% if  twitto.likes|filter(like => like.user == app.user)|length>0 %}
+          <a  class="card-link text-primary like" data-id="{{ twitto.id }}" ><i class="fa-solid fa-heart"></i></a>
+        {% else %}
+          <a  class="card-link text-primary like" data-id="{{ twitto.id }}" ><i class="fa-regular fa-heart"></i></a>
+        {% endif %}
+
+        <a data-bs-target="#collapse{{ twitto.id }}"  type="button" data-bs-toggle="collapse" class="card-link text-primary"><i class="fa-regular fa-comment-dots"></i></a>
+        <a  class="card-link text-primary"><i class="fa-solid fa-share"></i></a>
+      </div>
+    {% endif %}
+    <div class="card-footer text-muted">     
+      {{ twitto.createdAt|time_diff }}
+    </div>
+    {# start Replay Twitto #}
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item">
+        <div id="collapse{{ twitto.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ twitto.id }}" data-bs-parent="#accordion-{{ twitto.parentTwitto.id|default(twitto.id) }}">
+          <div class="accordion-body">
+            {% include "home/_reply_form.html.twig" %}
+          </div>
+        </div>
+      </div>
+    </div>  
+    {# end Replay Twitto #}    
+</div>
+ 

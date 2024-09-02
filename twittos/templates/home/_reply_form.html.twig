@@ -1,0 +1,29 @@
+{% if app.user %}
+    <div class="row mt-4">
+        <div class="col">
+            {# {{ form_start(twittoForm,{'id':'form-reply-'~twitto.id,'action':path('app_twitto_reply',{'id':twitto.id})}) }}
+                {{ form_widget(twittoForm) }}
+                <button class="btn btn-primary" type="submit" >Répondre</button>
+            {{ form_end(twittoForm) }} #}
+            <form name="twitto-{{ twitto.id }}" id="twitto-{{ twitto.id }}" 
+                  method="post" action="{{ path('app_twitto_reply',{'id':twitto.id}) }}">
+                <div id="twitto">
+                    <div class="mb-3">
+                        <label for="twitto_content" class="form-label required">Content</label>
+                        <textarea id="twitto_content" name="twitto[content]" required="required" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="twitto_image" class="form-label">Image</label>
+                        <input type="text" id="twitto_image" name="twitto[image]" maxlength="255" class="form-control"></div>
+                </div>
+                <input type="hidden" id="twitto__token" name="twitto__token" value="{{ csrf_token('reply-item') }}">                
+                <button class="btn btn-primary" type="submit">Répondre</button>
+            </form>             
+        </div>
+    </div>
+    <div class="row mt-2">
+        {% for twitto in twitto.replies %}            
+            {% include "home/_twitto.html.twig" %}
+        {% endfor %}
+    </div>    
+{% endif %}
