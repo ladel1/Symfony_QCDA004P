@@ -1,8 +1,16 @@
-<div class="card mb-3">
-    <h3 class="card-header">
-        {# <img alt="profile picture" > --- #} 
-        @{{ twitto.author.username }}
-    </h3>
+<div class="card mb-3" data-delete-twitto="{{ twitto.id  }}">
+    <div class="card-header twitto-header">
+      <h3>
+          {# <img alt="profile picture" > --- #} 
+          @{{ twitto.author.username }}        
+      </h3>
+      {% if app.user and (twitto.author.id == app.user.id or is_granted("ROLE_MODERATOR")  )%}
+        <button type="button" class="btn-close delete-twitto" data-id="{{ twitto.id  }}"  aria-label="Close">
+          <span aria-hidden="true"></span>
+        </button>
+      {% endif %}
+    </div>
+
     <div class="card-body">
         <p class="card-text">{{ twitto.content }}</p>
       </div>

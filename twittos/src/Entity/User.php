@@ -63,11 +63,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $likes;
 
+    #[ORM\Column()]
+    private ?bool $ban = null;
+
     public function __construct()
     {
         $this->twittos = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+        $this->ban = false;
     }
 
     public function getId(): ?int
@@ -249,6 +253,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $like->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isBan(): ?bool
+    {
+        return $this->ban;
+    }
+
+    public function setBan(?bool $ban): static
+    {
+        $this->ban = $ban;
 
         return $this;
     }

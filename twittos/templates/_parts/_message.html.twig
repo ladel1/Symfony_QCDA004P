@@ -1,0 +1,15 @@
+<div class="row mt-5">
+    <div class="col-6 offset-3" id="msg">
+        {% for type,messages in app.flashes %}
+            <div class="alert alert-{{type}}">
+                <ul>
+                    {% for message in messages %}
+                        <li>
+                            {{message}}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+</div>

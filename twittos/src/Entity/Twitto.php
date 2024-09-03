@@ -35,7 +35,7 @@ class Twitto
     /**
      * @var Collection<int, self>
      */
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentTwitto')]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentTwitto',cascade:["remove"])]
     private Collection $replies;
 
     /**

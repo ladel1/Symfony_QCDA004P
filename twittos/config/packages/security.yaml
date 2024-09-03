@@ -38,7 +38,16 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/twitto/new, roles: ROLE_USER }
         - { path: ^/twitto/edit, roles: ROLE_USER }
-        - { path: ^/twitto/delete, roles: ROLE_USER }        
+        - { path: ^/twitto/delete, roles: ROLE_USER }    
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/like, roles: ROLE_USER }
+        - { path: ^/twitto/reply, roles: ROLE_USER }
+        - { path: ^/twittos, roles: ROLE_MODERATOR }
+        - { path: ^/users, roles: ROLE_ADMIN }                
+
+    role_hierarchy:
+        ROLE_MODERATOR: ROLE_USER
+        ROLE_ADMIN: ROLE_MODERATOR
 
 when@test:
     security:

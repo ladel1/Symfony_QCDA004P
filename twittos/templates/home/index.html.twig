@@ -25,35 +25,5 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        document.querySelectorAll(".like").forEach((element,numer,array)=>{
-            element.addEventListener("click",function(event){                
-                let twittoId = event.currentTarget.getAttribute("data-id");
-                fetch('/like/'+twittoId,{ 
-                    method: "post"
-                 })
-                 .then((reponse)=> reponse.json())
-                 .then((data)=>{
-                    let like = JSON.parse(data);
-                    let likeButton = this.querySelector(".fa-heart");   
-     
-                    if(like.status == 1){
-                        this.nextElementSibling.innerHTML++;
-                        likeButton.classList.add("fa-solid");
-                        likeButton.classList.remove("fa-regular");
-                    }else{
-                        this.nextElementSibling.innerHTML--;
-                        likeButton.classList.add("fa-regular");
-                        likeButton.classList.remove("fa-solid");
-                        
-                    }
-                    
-                 })
-                 .catch((error)=>{
-                    console.error(error);
-                 })
-                 ;
-            })
-        });
-    </script>
+    <script src="{{ asset("js/home.js") }}"></script>
 {% endblock %}
