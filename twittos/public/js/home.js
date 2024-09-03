@@ -44,12 +44,16 @@ document.querySelectorAll(".delete-twitto").forEach((element,key,array)=>{
     element.addEventListener("click",function (event) {
         
         const twittoId = event.currentTarget.getAttribute("data-id");
+        const twittoCSRFToken = event.currentTarget.getAttribute("data-csrf-token");
         const twittoNodeContainer = this.closest("[data-delete-twitto]");
 
         if(!confirm("Voulez vous vraiment supprimer ce Twitto!")) return false;
 
+        if(twittoId!==twittoNodeContainer.getAttribute("data-delete-twitto")) return;
+
         fetch("/twitto/delete/"+twittoId,{
-            method:"POST"
+            method:"POST",
+            body: JSON.stringify({"_token":twittoCSRFToken})
         })
         .then(reponse=>reponse.json())
         .then(data=>{
@@ -57,9 +61,8 @@ document.querySelectorAll(".delete-twitto").forEach((element,key,array)=>{
             if(json.msg){
                 document.getElementById("msg").innerHTML= "<div class='alert'>"+json.msg+"</div>";
             }
-            if(twittoId===twittoNodeContainer.getAttribute("data-delete-twitto")){
-                twittoNodeContainer.remove();
-            }
+            if(json.code===false) return;
+            twittoNodeContainer.remove();
         })
         .catch(error=>console.log(error))
 

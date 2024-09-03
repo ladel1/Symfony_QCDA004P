@@ -101,13 +101,14 @@ final class TwittoController extends AbstractController
     public function delete(Request $request, Twitto $twitto, EntityManagerInterface $entityManager): Response
     {
         if($this->getUser()!=$twitto->getAuthor() && !$this->isGranted("ROLE_MODERATOR") ){
-            return $this->json(sprintf('{"msg":"You can not delete this twitto, not yours!"}'),Response::HTTP_FORBIDDEN);
+            return $this->json(sprintf('{"msg":"You can not delete this twitto, not yours!","code":false}'),Response::HTTP_FORBIDDEN);
         }
 
-        //if ($this->isCsrfTokenValid('delete'.$twitto->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($twitto);
-            $entityManager->flush();
-       // }
-        return $this->json(sprintf('{"msg":"Twitto deleted"}'),200);
+        if (!$this->isCsrfTokenValid('delete'.$twitto->getId(), $request->getPayload()->getString('_token'))) {
+            return  $this->json(sprintf('{"msg":"CSRF token not valid!","code":false}'),Response::HTTP_FORBIDDEN);
+        }
+        $entityManager->remove($twitto);
+        $entityManager->flush();
+        return $this->json(sprintf('{"msg":"Twitto deleted","code":false}'),Response::HTTP_ACCEPTED);
     }
 }
