@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Twitto;
 use App\Form\TwittoType;
 use App\Repository\TwittoRepository;
+use App\Service\Censurator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/twitto')]
 final class TwittoController extends AbstractController
 {
+
+
+    public function __construct(
+        private Censurator $censurator
+        )
+    {}
+
+
     #[Route(name: 'app_twitto_index', methods: ['GET'])]
     public function index(TwittoRepository $twittoRepository): Response
     {
@@ -30,6 +39,7 @@ final class TwittoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $twitto->setContent( $this->censurator->purify($twitto->getContent(),"****") );
             $twitto->setAuthor($this->getUser());
             $entityManager->persist($twitto);
             $entityManager->flush();
@@ -37,12 +47,6 @@ final class TwittoController extends AbstractController
 
         return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
-
-
-
-
-
-
 
 
 
@@ -54,6 +58,7 @@ final class TwittoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $this->isCsrfTokenValid('reply-item', $request->getPayload()->getString('twitto__token'))) {
+            $twitto->setContent( $this->censurator->purify($twitto->getContent(),"****") );            
             $twittoReplay->setParentTwitto($twitto);
             $twittoReplay->setAuthor($this->getUser());
             $entityManager->persist($twittoReplay);
@@ -63,21 +68,6 @@ final class TwittoController extends AbstractController
         
         return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     #[Route('/{id}', name: 'app_twitto_show', methods: ['GET'])]
@@ -95,6 +85,7 @@ final class TwittoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $twitto->setContent( $this->censurator->purify($twitto->getContent(),"****") );
             $entityManager->flush();
 
             return $this->redirectToRoute('app_twitto_index', [], Response::HTTP_SEE_OTHER);
