@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark" data-bs-theme="dark">
-    <div class="container-fluid">
+    <div class="container">
       <a class="navbar-brand" href="{{ path('app_home') }}">
         <img src="{{ asset('img/logo.png') }}" alt="Logo Twitto" >
         Twitto
@@ -7,7 +7,9 @@
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04" aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      
       <div class="collapse navbar-collapse" id="navbarColor04">
+
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link active" href="{{ path('app_home') }}">Home
@@ -20,6 +22,20 @@
           <input class="form-control me-sm-2" type="search" placeholder="Search">
           <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
         </form>
+
+        {% if app.user %}
+          <div class="navbar-nav ms-md-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> <i class="fa-regular fa-user"></i> {{ app.user.username }}</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ path('app_my_profile') }}">My profile</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+              </div>
+            </li>
+          </div>
+        {% endif %}
+
       </div>
     </div>
   </nav>

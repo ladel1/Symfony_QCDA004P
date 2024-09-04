@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\ProfileType;
 use App\Form\ProfileUserType;
 use App\Repository\ProfileRepository;
+use App\Service\ProfileManagerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,7 @@ final class ProfileController extends AbstractController
     }
 
     #[Route('/my-profile', name: 'app_my_profile', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager,ProfileManagerService $profileManager): Response
     {
 
         /**
@@ -49,21 +50,12 @@ final class ProfileController extends AbstractController
         $profileUserForm->handleRequest($request);
 
         if (
-                ($form->isSubmitted() && $form->isValid()) ||
-                (
-                    $profileUserForm->isSubmitted() && 
-                    $profileUserForm->isValid() &&
-                    $profileUserForm->get('plainPassword')->getData()===$profileUserForm->get('confirmPassword')->getData() &&
-                    $passwordHasher->isPasswordValid($user,$profileUserForm->get('currentPassword')->getData())
-                )
+                $profileManager->checkProfileValidity($form) ||
+                $profileManager->checkUserValidity($user,$profileUserForm)
             ) {
 
-             // encode the plain password
-            if(!empty($profileUserForm->get('plainPassword')->getData())){
-                $user->setPassword($passwordHasher->hashPassword($user, $profileUserForm->get('plainPassword')->getData()));   
-            }
-
-
+            $profileManager->processUserPassword($profileUserForm,$user);
+            
             $user->setProfile($profile);
             $entityManager->persist($user);
             $entityManager->flush();
