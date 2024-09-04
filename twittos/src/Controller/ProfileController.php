@@ -7,27 +7,26 @@ use App\Entity\User;
 use App\Form\ProfileType;
 use App\Form\ProfileUserType;
 use App\Repository\ProfileRepository;
+use App\Repository\TwittoRepository;
 use App\Service\FileUploaderService;
 use App\Service\ProfileManagerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class ProfileController extends AbstractController
 {
 
 
-    #[Route('/profile/{id}', name: 'app_profile_show', methods: ['GET'])]
-    public function show(Profile $profile): Response
+    #[Route('/profile/@{username}', name: 'app_profile_show',requirements:["username"=>"[a-zA-Z0-9\.\_\- ]{2,}"], methods: ['GET'])]
+    public function show(User $user,TwittoRepository $twittoRepository): Response
     {
         return $this->render('profile/show.html.twig', [
-            'profile' => $profile,
+            'user' => $user,
+            'twittos'=> $twittoRepository->findBy(["author"=>$user],["createdAt"=>"DESC"],4)
         ]);
     }
 
@@ -67,7 +66,7 @@ final class ProfileController extends AbstractController
             /** Start uploading image */
             try {
                 $newFilename = $fileUploader->upload($form->get("photo")->getData());
-                $profile->setPhoto($newFilename);                
+                if($newFilename!==null) $profile->setPhoto($newFilename);                
             } catch (FileException $e) {
                 $this->addFlash("danger","Error during uploading image!");
             }
@@ -83,7 +82,7 @@ final class ProfileController extends AbstractController
         return $this->render('profile/myprofile.html.twig', [
             'profile' => $profile,
             'form' => $form,
-            'profileUserForm'=>$profileUserForm
+            'profileUserForm'=>$profileUserForm,
         ]);
     }
 

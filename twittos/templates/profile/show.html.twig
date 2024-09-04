@@ -3,32 +3,97 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
-    <h1>Profile</h1>
 
+    {# {% if user.profile %}
     <table class="table">
         <tbody>
             <tr>
                 <th>Id</th>
-                <td>{{ profile.id }}</td>
+                <td>{{ user.profile.id }}</td>
             </tr>
             <tr>
                 <th>Photo</th>
-                <td>{{ profile.photo }}</td>
+                <td>
+                    <img src="{{ asset('uploads/'~ user.profile.photo ) }}" >
+                </td>
             </tr>
             <tr>
                 <th>Bio</th>
-                <td>{{ profile.bio }}</td>
+                <td>{{ user.profile.bio }}</td>
             </tr>
             <tr>
                 <th>Location</th>
-                <td>{{ profile.location }}</td>
+                <td>{{user.profile.location }}</td>
             </tr>
         </tbody>
     </table>
+    {% endif %} #}
 
-    <a href="{{ path('app_profile_index') }}">back to list</a>
+    <section class="h-100 gradient-custom-2">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center">
+            <div class="col col-lg-9 col-xl-8">
+              <div class="card">
+                <div class="rounded-top text-white d-flex flex-row" style=" height:200px;">
+                  <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+                    {% if user.profile and user.profile.photo %}
+                        <img src="{{ asset('uploads/'~ user.profile.photo ) }}"
+                        alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                        style="width: 150px; z-index: 1">
+                    {% else %}
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                    alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                    style="width: 150px; z-index: 1">
+                    {% endif %}
 
-    <a href="{{ path('app_profile_edit', {'id': profile.id}) }}">edit</a>
+                    {% if (app.user.id) is same as (user.id) %}
+                        <a href="{{ path("app_my_profile") }}"  type="button" class="btn btn-outline-primary text-body" data-mdb-ripple-color="dark" style="z-index: 1;">
+                        Edit profile
+                        </a>
+                    {% endif %}
 
-    {{ include('profile/_delete_form.html.twig') }}
+                  </div>
+                  <div class="ms-3" style="margin-top: 130px;">
+                    <h5>@{{user.username}}</h5>
+                    <p>{{ user.profile.location|default('No location') }}</p>
+                  </div>
+                </div>
+                <div class="p-4 text-black">
+                  <div class="d-flex justify-content-end text-center py-1 text-body">
+                    <div class="px-3">
+                      <p class="mb-1 h5">1026</p>
+                      <p class="small text-muted mb-0">Followers</p>
+                    </div>
+                    <div>
+                      <p class="mb-1 h5">478</p>
+                      <p class="small text-muted mb-0">Following</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-4 text-black">
+                  <div class="mb-5  text-body">
+                    <p class="lead fw-normal mb-1">Bio</p>
+                    <div class="p-4 ">
+                        {{ user.profile.bio|default("No bio") }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mb-4 text-body">
+                    <p class="lead fw-normal mb-0">Recent twittos</p>
+                    <p class="mb-0"><a href="#!" class="text-muted">Show all</a></p>
+                  </div>
+                  {% for row in twittos|batch(2) %}
+                        <div class="row g-2">
+                            {% for twitto in row %}
+                                <div class="col mb-2">
+                                    {% include "home/_twitto.html.twig" %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>    
 {% endblock %}

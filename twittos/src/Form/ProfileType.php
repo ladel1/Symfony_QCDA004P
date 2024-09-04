@@ -26,6 +26,9 @@ class ProfileType extends AbstractType
                         ],
                         'mimeTypesMessage' => 'Please upload a valid image file'
                     ])
+                    ],
+                'attr'=>[
+                    'accept'=>'image/*'
                 ]
             ])
             ->add('bio')
