@@ -11,8 +11,8 @@
             {{ form(profileUserForm) }}
         </div>
     </div>   
-    <hr>
-    <div class="row my-3">
+    <hr class="border col-4 offset-4 border-dark border-1 opacity-25">
+    <div class="row my-4">
         <div class="col-6 offset-3">
             {% if app.user and app.user.profile %}
                 {{ include('profile/_form.html.twig', {'button_label': 'Edit'}) }}
