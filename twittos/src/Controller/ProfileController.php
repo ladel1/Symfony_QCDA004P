@@ -7,13 +7,17 @@ use App\Entity\User;
 use App\Form\ProfileType;
 use App\Form\ProfileUserType;
 use App\Repository\ProfileRepository;
+use App\Service\FileUploaderService;
 use App\Service\ProfileManagerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class ProfileController extends AbstractController
 {
@@ -28,7 +32,11 @@ final class ProfileController extends AbstractController
     }
 
     #[Route('/my-profile', name: 'app_my_profile', methods: ['GET', 'POST'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager,ProfileManagerService $profileManager): Response
+    public function edit(Request $request, 
+    EntityManagerInterface $entityManager,
+    ProfileManagerService $profileManager,
+    FileUploaderService $fileUploader
+    ): Response
     {
 
         /**
@@ -56,6 +64,15 @@ final class ProfileController extends AbstractController
 
             $profileManager->processUserPassword($profileUserForm,$user);
             
+            /** Start uploading image */
+            try {
+                $newFilename = $fileUploader->upload($form->get("photo")->getData());
+                $profile->setPhoto($newFilename);                
+            } catch (FileException $e) {
+                $this->addFlash("danger","Error during uploading image!");
+            }
+            /** End uploading image */
+
             $user->setProfile($profile);
             $entityManager->persist($user);
             $entityManager->flush();

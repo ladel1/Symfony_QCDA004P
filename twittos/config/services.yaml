@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     badwords_file_name: '%kernel.project_dir%/data/badwords.json'
+    upload_path: '%kernel.project_dir%/public/uploads'
 
 services:
     # default configuration for services in *this* file
