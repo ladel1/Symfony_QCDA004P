@@ -109,6 +109,6 @@ final class TwittoController extends AbstractController
         }
         $entityManager->remove($twitto);
         $entityManager->flush();
-        return $this->json(sprintf('{"msg":"Twitto deleted","code":false}'),Response::HTTP_ACCEPTED);
+        return $this->json(sprintf('{"msg":"Twitto deleted","code":true}'),Response::HTTP_ACCEPTED);
     }
 }

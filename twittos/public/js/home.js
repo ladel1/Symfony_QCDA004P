@@ -62,6 +62,7 @@ document.querySelectorAll(".delete-twitto").forEach((element,key,array)=>{
                 document.getElementById("msg").innerHTML= "<div class='alert'>"+json.msg+"</div>";
             }
             if(json.code===false) return;
+            alert("ddd");
             twittoNodeContainer.remove();
         })
         .catch(error=>console.log(error))
