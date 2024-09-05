@@ -34,45 +34,44 @@ searchTwittosNode.addEventListener("keyup", (event) => {
   
   });
 
-
+/**
+ * Display users list (only who already posted a twitto)
+ * @param {*} jsonData 
+ * @returns 
+ */
 function displayUsers(jsonData){
-  if(jsonData.type==="users"){
-    displaySearchResults.innerHTML="";
-    jsonData.results.forEach(element => {
-        const aNode = document.createElement("a");
-        aNode.classList.add("dropdown-item");
-        aNode.setAttribute("href","/profile/@"+element);
-        aNode.innerHTML=element;
-        displaySearchResults.append(aNode);
-    });
-  }
+  if(jsonData.type!=="users") return;
+  display(jsonData,"/profile/@");
 }
 
-
+/**
+ * Display twittos in dropdown
+ * @param {*} jsonData 
+ * @returns 
+ */
 function displayTwittos(jsonData) {
-  if(jsonData.type==="twittos"){
-    displaySearchResults.innerHTML="";
-    jsonData.results.forEach(element => {
-        const aNode = document.createElement("a");
-        aNode.classList.add("dropdown-item");
-        aNode.setAttribute("href","/s/"+element);
-        aNode.innerHTML=element;
-        displaySearchResults.append(aNode);
-    });
-  }
+  if(jsonData.type!=="twittos") return;
+  display(jsonData,"/s/");
+}
+/**
+ * Display in dropdows search
+ * @param {*} data 
+ * @param {*} href 
+ */
+function display(jsonData,prefix) {
+  displaySearchResults.innerHTML="";
+  jsonData.results.forEach(element => {
+      const aNode = document.createElement("a");
+      aNode.classList.add("dropdown-item");
+      aNode.setAttribute("href",prefix+element);
+      aNode.innerHTML=element;
+      displaySearchResults.append(aNode);
+  });
 }
 
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * Clear dropdown when click on close button
+ */
 searchTwittosNode.addEventListener("search",(event)=>{
   searchDropdownNode.classList.remove("show");
 })
