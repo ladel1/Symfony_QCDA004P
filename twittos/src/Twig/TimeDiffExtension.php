@@ -30,7 +30,7 @@ class TimeDiffExtension extends AbstractExtension{
             return $prefix.$interval->m." mois"; 
          }
         if($interval->d>0){
-           return $interval->d." jours"; 
+           return $prefix.$interval->d.(($interval->d==1)?" jour":"jours"); 
         }
         if($interval->h>0){
             return $prefix.$interval->h." heures"; 

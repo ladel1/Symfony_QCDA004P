@@ -16,6 +16,19 @@ class TwittoRepository extends ServiceEntityRepository
         parent::__construct($registry, Twitto::class);
     }
 
+    public function searchByAuthor(string $keyword){
+        $em = $this->getEntityManager();
+        $dql = "SELECT t FROM App\Entity\Twitto t JOIN t.author a WHERE a.username LIKE :keyword GROUP BY t.author";
+        $query  = $em->createQuery($dql);
+        $query->setParameter("keyword","%".$keyword."%");
+        $query->setMaxResults(5);
+        return $query->getResult(); 
+    }
+
+    public function searchByContent(string $keyword){
+
+    }
+
     //    /**
     //     * @return Twitto[] Returns an array of Twitto objects
     //     */
